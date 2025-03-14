@@ -271,3 +271,56 @@ def find_best_jobs(cv_file, job_offers):
     ]
     
     return pd.DataFrame(best_jobs)
+
+import json
+
+def resume_skills():
+    # Specify the path of the file to be read
+    input_filepath = "resume/resume.json"
+
+    with open(input_filepath, "r", encoding="utf-8") as file_load:
+       cv_data = json.load(file_load)
+
+    # Specify the path of the file to be read
+    input_filepath = "resume/job_posting.json"
+
+    with open(input_filepath, "r", encoding="utf-8") as file_load:
+       job_data = json.load(file_load)
+
+    # Extract skills from the resume and job posting
+    cv_technical_skills = set(cv_data.get("technical_skills", []))
+    job_technical_skills = set(job_data.get("technical_skills", []))
+
+    cv_soft_skills = set(cv_data.get("soft_skills", []))
+    job_soft_skills = set(job_data.get("soft_skills", []))
+
+    # Skills that are **in the job posting** but **not in the resume**
+    missing_technical_skills = list(job_technical_skills - cv_technical_skills)[:5]
+    missing_soft_skills = list(job_soft_skills - cv_soft_skills)[:5]
+
+    # Skills that are **in both** the job posting and the resume
+    match_technical_skills = list(cv_technical_skills & job_technical_skills)
+    match_soft_skills = list(cv_soft_skills & job_soft_skills)
+
+    # Create a JSON file with missing skills
+    missing_skills = {
+        "technical_skills": missing_technical_skills,
+        "soft_skills": missing_soft_skills
+    }
+
+    # Create a JSON file with matching skills
+    match_skills = {
+        "technical_skills": match_technical_skills,
+        "soft_skills": match_soft_skills
+    }
+
+    # Save missing skills to a JSON file
+    with open("resume/resume_missing_skills.json", "w") as file:
+        json.dump(missing_skills, file, indent=4)
+    print("Missing skills saved in 'resume/resume_missing_skills.json'.")
+
+    # Save matching skills to a JSON file
+    with open("resume/resume_match_skills.json", "w") as file:
+        json.dump(match_skills, file, indent=4)
+    print("Matching skills saved in 'resume/r
+
